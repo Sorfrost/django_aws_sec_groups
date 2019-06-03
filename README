@@ -1,8 +1,13 @@
 python -m virtualenv .
+source bin/activate
 pip install -r requirements.txt
+touch aws_cli/sec_group/migrations/__init__.py
 python manage.py makemigrations
 python manage.py migrate
 python manage.py createsuperuser
+
+Run development server:
+    python manage.py runserver
 
 create normal user from the admin page ('/admin')
 configure aws key from the admin page

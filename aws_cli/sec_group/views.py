@@ -11,7 +11,7 @@ from django.utils import timezone
 @login_required
 def mainpage_sec(request):
     awskey = AwsKey.objects.get(active=True)
-    if awskey.last_used + timezone.timedelta(days=1) < timezone.now():
+    if awskey.last_used + timezone.timedelta(minutes=1) < timezone.now():
         response = get_sec_groups(awskey.key_id, awskey.key_secret, awskey.region)
         for secgroup in response['SecurityGroups']:
             a = SecGroup(GroupId=secgroup['GroupId'], GroupName=secgroup['GroupName'],
@@ -20,10 +20,13 @@ def mainpage_sec(request):
         awskey.last_used = timezone.now()
         awskey.save()
     secgroups = SecGroupPermission.objects.filter(username=request.user)
-    filter = [x.GroupName.GroupId for x in secgroups]
-    response = get_sec_groups(awskey.key_id, awskey.key_secret, awskey.region, filter=filter)
-    print(json.dumps(response, indent=4))
-    return render(request, 'test.html', context = {'secgroups' : response['SecurityGroups']})
+    if not secgroups:
+        return HttpResponse('Your user is not associated with any security group')
+    else:
+        filter = [x.GroupName.GroupId for x in secgroups]
+        response = get_sec_groups(awskey.key_id, awskey.key_secret, awskey.region, filter=filter)
+        print(json.dumps(response, indent=4))
+        return render(request, 'test.html', context = {'secgroups' : response['SecurityGroups']})
 
 @login_required
 def authorize_ingress_sec(request):

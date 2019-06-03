@@ -5,3 +5,4 @@ Scripts
 tcl
 key
 aws_cli/db.sqlite3
+aws_cli/sec_group/migrations/*
