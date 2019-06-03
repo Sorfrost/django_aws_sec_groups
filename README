@@ -1,0 +1,9 @@
+python -m virtualenv .
+pip install -r requirements.txt
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+
+create normal user from the admin page ('/admin')
+configure aws key from the admin page
+associate the user you just created with one of your security groups

@@ -1,0 +1,7 @@
+.idea
+Include
+Lib
+Scripts
+tcl
+key
+aws_cli/db.sqlite3

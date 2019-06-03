@@ -1,0 +1,29 @@
+{% for secgroup in secgroups %}
+<h1>{{ secgroup.GroupName }}</h1>
+    {% for ipperm in secgroup.IpPermissions %}
+        {% for iprange in ipperm.IpRanges %}
+            <form method="post" action="revoke_ingress_sec">
+                {% csrf_token %}
+            <div>
+                <input type="text" name="{{iprange.CidrIp}}___visible" value="{{iprange.CidrIp}} -
+{{ipperm.FromPort}} - {{iprange.Description}}" disabled></input>
+                <input type="hidden" name="{{secgroup.GroupId}}___cidr" value="{{iprange.CidrIp}}"></input>
+                <input type="hidden" name="{{secgroup.GroupId}}___port" value="{{ipperm.FromPort}}"></input>
+                <input type="hidden" name="{{secgroup.GroupId}}___description" value="{{iprange.Description}}"></input>
+                <input type="submit" value="Del">
+            </div>
+            </form>
+        {% endfor %}
+    {% endfor %}
+    <form method="post" action="authorize_ingress_sec">
+        {% csrf_token %}
+        ip
+        <input type="text" name="{{secgroup.GroupId}}___cidr">
+        port
+        <input type="text" name="{{secgroup.GroupId}}___port">
+        description
+        <input type="text" name="{{secgroup.GroupId}}___description" >
+        <input type="submit" value="Add">
+    </form>
+<hr>
+{% endfor %}

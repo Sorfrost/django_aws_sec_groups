@@ -1,0 +1,10 @@
+{% for secgroup in secgroups %}
+<h1>{{ secgroup.GroupName }}</h1>
+    <ul>
+    {% for ipperm in secgroup.IpPermission %}
+        {% for iprange in ipperm.IpRanges %}
+            <li>{{iprange.CidrIp}} - {{ipperm.FromPort}}</li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+{% endfor %}
