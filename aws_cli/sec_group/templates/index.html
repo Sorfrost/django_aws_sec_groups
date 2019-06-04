@@ -5,8 +5,7 @@
             <form method="post" action="revoke_ingress_sec">
                 {% csrf_token %}
             <div>
-                <input type="text" name="{{iprange.CidrIp}}___visible" value="{{iprange.CidrIp}} -
-{{ipperm.FromPort}} - {{iprange.Description}}" disabled></input>
+                <input type="text" name="{{iprange.CidrIp}}___visible" value="{{iprange.CidrIp}} - {{ipperm.FromPort}} - {{iprange.Description}}" disabled></input>
                 <input type="hidden" name="{{secgroup.GroupId}}___cidr" value="{{iprange.CidrIp}}"></input>
                 <input type="hidden" name="{{secgroup.GroupId}}___port" value="{{ipperm.FromPort}}"></input>
                 <input type="hidden" name="{{secgroup.GroupId}}___description" value="{{iprange.Description}}"></input>

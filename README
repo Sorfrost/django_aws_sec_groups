@@ -1,3 +1,9 @@
+REQUIREMENTS
+python3.6+
+pip
+aws access key id and aws access key secret with administration privileges
+
+INSTRUCTIONS
 python -m virtualenv .
 source bin/activate
 pip install -r requirements.txt
@@ -11,4 +17,5 @@ Run development server:
 
 create normal user from the admin page ('/admin')
 configure aws key from the admin page
+visit / once to populate the database
 associate the user you just created with one of your security groups

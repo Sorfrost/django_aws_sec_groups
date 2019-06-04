@@ -21,8 +21,6 @@ def authorize_ingress(aws_access_key_id, aws_secret_access_key, region_name, gro
             'Description' : desc
         }]
     }]
-    #response = ec2.authorize_security_group_ingress(CidrIp=cidr, FromPort=port, ToPort=port, GroupId=groupid,
-    #                                                IpProtocol='TCP')
     response = ec2.authorize_security_group_ingress(GroupId=groupid, IpPermissions=IpPermissions)
     return response
 
@@ -38,8 +36,22 @@ def revoke_ingress(aws_access_key_id, aws_secret_access_key, region_name, groupi
             'CidrIp' : cidr
         }]
     }]
-    #response = ec2.authorize_security_group_ingress(CidrIp=cidr, FromPort=port, ToPort=port, GroupId=groupid,
-    #                                                IpProtocol='TCP')
     response = ec2.revoke_security_group_ingress(GroupId=groupid, IpPermissions=IpPermissions)
     return response
 
+def update_db_sec(aws_access_key_id, aws_secret_access_key, region_name):
+    from .models import SecGroup, AwsKey
+    from django.utils import timezone
+    response = get_sec_groups(aws_access_key_id, aws_secret_access_key, region_name)
+    listgroups = [x.GroupId for x in SecGroup.objects.all()]
+    for group in listgroups:
+        if group not in [x['GroupId'] for x in response['SecurityGroups']]:
+            SecGroup.objects.filter(GroupId=group).delete()
+    for secgroup in response['SecurityGroups']:
+        a = SecGroup(GroupId=secgroup['GroupId'], GroupName=secgroup['GroupName'],
+                     Description=secgroup['Description'])
+        a.save()
+    awskey = AwsKey.objects.get(active=True)
+    awskey.last_used = timezone.now()
+    awskey.save()
+    return 0
