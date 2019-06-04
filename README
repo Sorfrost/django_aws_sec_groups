@@ -7,6 +7,7 @@ INSTRUCTIONS
 python -m virtualenv .
 source bin/activate
 pip install -r requirements.txt
+mkdir aws_cli/sec_group/migrations
 touch aws_cli/sec_group/migrations/__init__.py
 python manage.py makemigrations
 python manage.py migrate
