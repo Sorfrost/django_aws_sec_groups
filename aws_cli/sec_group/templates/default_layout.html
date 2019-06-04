@@ -1,0 +1,25 @@
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="//cdn.bootcss.com/animate.css/3.7.1/animate.min.css">
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}"> 
+</head>
+<body>
+	<div class="header">
+		<div class="header-item">
+			<a class="header-item-link" href="//home.org">HOME</a>
+		</div>
+		<div class="header-item">
+			<a class="header-item-link" href="//pub.org">PUB</a>
+		</div>
+    </div>
+	<div class="content">
+		{% block content %}
+		{% endblock %}
+	</div>
+	{%block script %}
+	{% endblock %}
+</body>
+</html>

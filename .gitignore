@@ -1,5 +1,7 @@
 .idea
+bin
 Include
+lib
 Lib
 Scripts
 tcl
@@ -7,3 +9,6 @@ key
 aws_cli/db.sqlite3
 aws_cli/sec_group/migrations/*
 key
+__pycache__*
+*__pycache__/*
+__pycache__/*

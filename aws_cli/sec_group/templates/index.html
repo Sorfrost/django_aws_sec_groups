@@ -1,28 +1,77 @@
-{% for secgroup in secgroups %}
-<h1>{{ secgroup.GroupName }}</h1>
-    {% for ipperm in secgroup.IpPermissions %}
-        {% for iprange in ipperm.IpRanges %}
-            <form method="post" action="revoke_ingress_sec">
-                {% csrf_token %}
-            <div>
-                <input type="text" name="{{iprange.CidrIp}}___visible" value="{{iprange.CidrIp}} - {{ipperm.FromPort}} - {{iprange.Description}}" disabled></input>
-                <input type="hidden" name="{{secgroup.GroupId}}___cidr" value="{{iprange.CidrIp}}"></input>
-                <input type="hidden" name="{{secgroup.GroupId}}___port" value="{{ipperm.FromPort}}"></input>
-                <input type="hidden" name="{{secgroup.GroupId}}___description" value="{{iprange.Description}}"></input>
-                <input type="submit" value="Del">
-            </div>
-            </form>
-        {% endfor %}
-    {% endfor %}
-    <form method="post" action="authorize_ingress_sec">
-        {% csrf_token %}
-        ip
-        <input type="text" name="{{secgroup.GroupId}}___cidr">
-        port
-        <input type="text" name="{{secgroup.GroupId}}___port">
-        description
-        <input type="text" name="{{secgroup.GroupId}}___description" >
-        <input type="submit" value="Add">
-    </form>
-<hr>
-{% endfor %}
+{% extends "default_layout.html" %}
+	{% load static %}
+	{% block css %}
+		<style>
+		</style>
+	{% endblock %}
+	{% block content %}
+		{%if is.superuser %}
+			{%include "superuser.html" %}
+		{% endif %}
+		{% for secgroup in secgroups %}
+			<h1 class="animated bounce group-name">{{ secgroup.GroupName }}</h1>
+				{% for ipperm in secgroup.IpPermissions %}
+					{% for iprange in ipperm.IpRanges %}
+						<div class="delete-section">
+							<form class="delete-form" method="post" action="revoke_ingress_sec">
+								{% csrf_token %}
+								<input class="delete-item" type="text" name="{{iprange.CidrIp}}___visible" value="{{iprange.CidrIp}} - {{ipperm.FromPort}} - {{iprange.Description}}" disabled></>
+								<input type="hidden" name="{{secgroup.GroupId}}___cidr" value="{{iprange.CidrIp}}"/>
+								<input type="hidden" name="{{secgroup.GroupId}}___port" value="{{ipperm.FromPort}}"/>
+								<input type="hidden" name="{{secgroup.GroupId}}___description" value="{{iprange.Description}}"/>
+								<button class="delete-button" type="submit">Del</button>
+							</form>
+						</div>
+					{% endfor %}
+				{% endfor %}
+				<hr>
+				<div class="add-section">
+					<form class="add-form" method="post" action="authorize_ingress_sec">
+					{% csrf_token %}
+					<div class="add-fields">
+						<label for="{{secgroup.GroupId}}___cidr">ip</label>
+						<input class="add-data add-data-cidr" type="text" name="{{secgroup.GroupId}}___cidr">
+						<label for="{{secgroup.GroupId}}___port">port</label>
+						<input maxlength=5 class="add-data add-data-port" type="text" name="{{secgroup.GroupId}}___port">
+						<label for="{{secgroup.GroupId}}___description">description</label>
+						<input class="add-data add-data-descr" type="text" name="{{secgroup.GroupId}}___description" >
+					</div>
+					<button class="add-button" type="submit">Add</button>
+					</form>
+				</div>
+			<hr>
+		{% endfor %}
+	{% endblock %}
+	{%block script %}
+		<script type="text/javascript">
+			$(".delete-button").click(function(e) {
+				e.preventDefault();
+				console.log("del btn click");
+				$(this).parent(".delete-form").parent(".delete-section").addClass("animated rollOut fast");
+				//$(this).parent(".delete-form").submit();
+			});
+			$(".add-button").click(function(e) {
+				e.preventDefault();
+				console.log("add btn click");
+				let emptyForm = false;
+				$(this).siblings(".add-fields").children("input").each(function() {
+				console.log("+++"+$(this).val()+"+++");
+					if($(this).val() == "") {
+						emptyForm = true;
+					}
+				});
+				if(emptyForm) {
+					$(".add-fields").children("input").addClass("animated flash");
+					$(".add-button").attr("disabled", "disabled");
+					setTimeout(function() {
+						$(".add-fields").children("input").removeClass("animated flash");
+						$(".add-button").removeAttr("disabled");
+					}, 1600);
+				}
+				else {
+					$(this).parent(".add-form").parent(".add-section").addClass("animated lightSpeedOut faster");
+					$(this).parent(".add-form").submit();
+				}
+			});			
+		</script>
+	{% endblock %}
